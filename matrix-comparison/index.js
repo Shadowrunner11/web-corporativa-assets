@@ -1,4 +1,5 @@
-function lenseViewStatus(element, cb, options) {
+function initMatrixComparison(){
+  function lenseViewStatus(element, cb, options) {
     let positionStatus = "exit";
   
     const observer = new IntersectionObserver((entries) => {
@@ -117,4 +118,4 @@ function lenseViewStatus(element, cb, options) {
   }
   fakeHeaderRow.addEventListener("click", handleChangeCurency);
   swiperTableBody.addEventListener("click", handleChangeCurency);
-  
+}
