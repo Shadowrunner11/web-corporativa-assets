@@ -153,14 +153,24 @@
     display: none;
   }
 
-  @media only screen and (max-width: 680px){
+  @media only screen and (max-width: 880px){
     .hide-on-680{
       display: none;
     }
   }
 
   .table__data-cell{
-    height: 7rem;
+    height: 9rem;
+  }
+
+  .table__data-cell--special{
+    height: 16rem;
+  }
+
+  @media only screen and (min-width: 1020){
+    .table__data-cell--special{
+      height: 14rem;
+    }
   }
  
   .table__header__data-cell, .table__data-cell, .price{
@@ -288,6 +298,10 @@
 
   .controls button:focus{
     outline: none;
+  }
+
+  .price strong{
+    font-size: 1.5em;
   }
 
 </style>
