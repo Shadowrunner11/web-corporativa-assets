@@ -11,7 +11,11 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://www.unpkg.com/comparison-matrix@1.0.0/index.umd.js"></script>
 <style>
- .swiper{
+  :root{
+    --hControls: 2.5rem;
+  }
+
+  .swiper{
     margin: 0;
   }
 
@@ -20,25 +24,80 @@
   }
 
   .controls{
-    margin-inline-start: auto;
+    -webkit-margin-start: auto;
+            margin-inline-start: auto;
     padding-inline: 0.25rem;
     display: none;
+    height: var(--hControls);
+  }
+
+  .controls button:focus{
+    border: none;
+    outline: none;
   }
 
   @media only screen and (min-width: 520px){
     .controls{
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
     }
   }
 
   .price{
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
   }
 
   .price__cta{
+    height: -webkit-max-content;
+    height: -moz-max-content;
     height: max-content;
+  }
+
+  .price__cta:hover, .price__cta:visited{
+    color: white
+  }
+
+  .table__products__cell svg{
+    font-size: 1.5rem
+  }
+
+  @media only screen and (min-width: 620px){
+    .table__products__cell svg{
+      font-size: 2rem
+    }
+  }
+
+  @media only screen and (min-width: 520px){
+    .price{
+      border-bottom: 1px solid #dadada;
+    }
+
+    .table__locked-column{
+      -webkit-transform: translateY(calc(var(--hControls) - 1px));
+          -ms-transform: translateY(calc(var(--hControls) - 1px));
+              transform: translateY(calc(var(--hControls) - 1px));
+    }
+  }
+
+  .comparison{
+    color: #444444;
+    text-align: center;
+    margin: 0;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.2px;
   }
 </style>
 
@@ -46,55 +105,10 @@
   id="${seccionId.getData()}" 
   class="${seccionClass.getData()}"
 >
+  <h3 class="comparison">Comparador</h3>
   <h2 class="title--primary">
     ${title.getData()}
   </h2>
-  <div 
-    class="flex justify--between controls"
-    data-id="controls"
-  >
-    <button class="flex" data-action="prev" style="gap: 0.5rem;">
-      <svg
-        data-action="prev" 
-        width="20" 
-        height="20" 
-        viewBox="0 0 20 20" 
-        fill="currentColor" 
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          data-action="prev"  
-          d="M8.29954 9.99691L13.7112 15.3343C13.8952 15.5157 13.9893 15.7438 13.9936 16.0185C13.9979 16.2931 13.9037 16.5254 13.7112 16.7152C13.5188 16.9051 13.2854 17 13.0112 17C12.7369 17 12.5036 16.9051 12.3111 16.7152L6.33984 10.826C6.21547 10.7033 6.12775 10.574 6.07666 10.4379C6.02555 10.3018 6 10.1548 6 9.99691C6 9.83898 6.02555 9.69199 6.07666 9.55592C6.12775 9.41984 6.21547 9.29048 6.33984 9.16785L12.3111 3.2786C12.4951 3.09715 12.7263 3.00433 13.0048 3.00014C13.2833 2.99592 13.5188 3.08874 13.7112 3.2786C13.9037 3.46843 14 3.69858 14 3.96905C14 4.23952 13.9037 4.46967 13.7112 4.6595L8.29954 9.99691Z" 
-          fill="currentColor"
-        />
-      </svg>
-
-      Anterior
-    </button>
-    <button
-      class="flex" 
-      data-action="next"
-      style="gap: 0.5rem;"
-    >
-      Siguiente
-      <svg
-        data-action="next" 
-        width="20" 
-        height="21" 
-        viewBox="0 0 20 21" 
-        fill="currentColor" 
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          data-action="next" 
-          d="M11.7005 10.5031L6.28875 5.16569C6.10478 4.98426 6.01066 4.75621 6.00641 4.48153C6.00214 4.20686 6.09625 3.97462 6.28875 3.78478C6.48123 3.59493 6.71458 3.5 6.98882 3.5C7.26305 3.5 7.49641 3.59493 7.68889 3.78478L13.6602 9.67403C13.7845 9.79666 13.8723 9.92602 13.9233 10.0621C13.9744 10.1982 14 10.3452 14 10.5031C14 10.661 13.9744 10.808 13.9233 10.9441C13.8723 11.0802 13.7845 11.2095 13.6602 11.3322L7.68889 17.2214C7.50493 17.4029 7.2737 17.4957 6.9952 17.4999C6.71671 17.5041 6.48123 17.4113 6.28875 17.2214C6.09625 17.0316 6 16.8014 6 16.531C6 16.2605 6.09625 16.0303 6.28875 15.8405L11.7005 10.5031Z" 
-          fill="currentColor"
-        />
-      </svg>
-    </button>
-  </div>
-
-
   <div class="table flex">
     <div class="table__locked-column" data-column="locked">
       <div 
@@ -115,17 +129,60 @@
         </#list>
       </#if>
     </div>
-  
+      
     <div 
-      class="flex g-1 swiper table__products" 
+      class="swiper table__products" 
       data-id="body-columns"
     >
+      <div 
+        class="flex justify--between controls"
+        data-id="controls"
+      >
+        <button class="flex" data-action="prev" style="gap: 0.5rem;">
+          <svg
+            data-action="prev" 
+            width="20" 
+            height="20" 
+            viewBox="0 0 20 20" 
+            fill="currentColor" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              data-action="prev"  
+              d="M8.29954 9.99691L13.7112 15.3343C13.8952 15.5157 13.9893 15.7438 13.9936 16.0185C13.9979 16.2931 13.9037 16.5254 13.7112 16.7152C13.5188 16.9051 13.2854 17 13.0112 17C12.7369 17 12.5036 16.9051 12.3111 16.7152L6.33984 10.826C6.21547 10.7033 6.12775 10.574 6.07666 10.4379C6.02555 10.3018 6 10.1548 6 9.99691C6 9.83898 6.02555 9.69199 6.07666 9.55592C6.12775 9.41984 6.21547 9.29048 6.33984 9.16785L12.3111 3.2786C12.4951 3.09715 12.7263 3.00433 13.0048 3.00014C13.2833 2.99592 13.5188 3.08874 13.7112 3.2786C13.9037 3.46843 14 3.69858 14 3.96905C14 4.23952 13.9037 4.46967 13.7112 4.6595L8.29954 9.99691Z" 
+              fill="currentColor"
+            />
+          </svg>
+          Anterior
+        </button>
+        <button
+          class="flex" 
+          data-action="next"
+          style="gap: 0.5rem;"
+        >
+          Siguiente
+          <svg
+            data-action="next" 
+            width="20" 
+            height="21" 
+            viewBox="0 0 20 21" 
+            fill="currentColor" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              data-action="next" 
+              d="M11.7005 10.5031L6.28875 5.16569C6.10478 4.98426 6.01066 4.75621 6.00641 4.48153C6.00214 4.20686 6.09625 3.97462 6.28875 3.78478C6.48123 3.59493 6.71458 3.5 6.98882 3.5C7.26305 3.5 7.49641 3.59493 7.68889 3.78478L13.6602 9.67403C13.7845 9.79666 13.8723 9.92602 13.9233 10.0621C13.9744 10.1982 14 10.3452 14 10.5031C14 10.661 13.9744 10.808 13.9233 10.9441C13.8723 11.0802 13.7845 11.2095 13.6602 11.3322L7.68889 17.2214C7.50493 17.4029 7.2737 17.4957 6.9952 17.4999C6.71671 17.5041 6.48123 17.4113 6.28875 17.2214C6.09625 17.0316 6 16.8014 6 16.531C6 16.2605 6.09625 16.0303 6.28875 15.8405L11.7005 10.5031Z" 
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
       <div 
         class="swiper-wrapper" 
         data-id="swiper-table-body"
       > 
         <#if productTitle.getSiblings()?has_content>
-	        <#list productTitle.getSiblings() as product>
+          <#list productTitle.getSiblings() as product>
             <#assign isSolesActive=getterUtil.getBoolean(product.isSolesActive.getData()) />
             <#assign isDollarsActive=getterUtil.getBoolean(product.isActiveDolars.getData()) />
             <div 
@@ -205,7 +262,7 @@
                         id="${product.dolarsButtonId.getData()}"
                         class="flex ${isSolesActive?string('color--primary', '')} ${product.dolarsButtonClass.getData()}" 
                         data-currency="dollars" 
-                         data-column="${product?index}" 
+                        data-column="${product?index}" 
                       >
                         <svg 
                           class="currency-icon currency-icon--vibrate"
@@ -247,12 +304,12 @@
                     data-row="${value?index}"
                   >
                     <#if (value.Icono.getData() == "check")>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.106 15.1147L16.8695 8.37623C17.0016 8.24418 17.149 8.18072 17.3118 8.18583C17.4746 8.19097 17.6253 8.26277 17.7637 8.40123C17.9022 8.53968 17.9714 8.68872 17.9714 8.84833C17.9714 9.00793 17.9022 9.15697 17.7637 9.29543L10.6887 16.3704C10.5246 16.5345 10.3346 16.6166 10.1185 16.6166C9.90252 16.6166 9.71246 16.5345 9.54836 16.3704L6.69836 13.5204C6.56631 13.3884 6.49708 13.241 6.49066 13.0781C6.48426 12.9153 6.55028 12.7647 6.68873 12.6262C6.8272 12.4878 6.97623 12.4185 7.13583 12.4185C7.29545 12.4185 7.44448 12.4878 7.58293 12.6262L10.106 15.1147Z" fill="#0099CC"/>
                       </svg>
                     </#if>
                     <#if (value.Icono.getData() == "cross")>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11.9998 12.9291L7.72673 17.2022C7.58828 17.3406 7.43925 17.4073 7.27963 17.4022C7.12003 17.3971 6.9678 17.3221 6.82293 17.1772C6.67805 17.0323 6.60561 16.8775 6.60561 16.7128C6.60561 16.548 6.67805 16.3932 6.82293 16.2484L11.071 12.0003L6.79793 7.72718C6.65946 7.58873 6.5928 7.43553 6.59793 7.26758C6.60305 7.09965 6.67805 6.94325 6.82293 6.79838C6.9678 6.6535 7.1226 6.58105 7.28733 6.58105C7.45206 6.58105 7.60686 6.6535 7.75173 6.79838L11.9998 11.0715L16.2729 6.79838C16.4114 6.65991 16.5646 6.58908 16.7325 6.58588C16.9005 6.58266 17.0569 6.6535 17.2017 6.79838C17.3466 6.94325 17.4191 7.09805 17.4191 7.26278C17.4191 7.42751 17.3466 7.58231 17.2017 7.72718L12.9287 12.0003L17.2017 16.2734C17.3402 16.4118 17.411 16.5609 17.4142 16.7205C17.4174 16.8801 17.3466 17.0323 17.2017 17.1772C17.0569 17.3221 16.9021 17.3945 16.7373 17.3945C16.5726 17.3945 16.4178 17.3221 16.2729 17.1772L11.9998 12.9291Z" fill="#A1A1A1"/>
                       </svg>
                     </#if>
@@ -267,7 +324,7 @@
                 </#list>
                 <div class="price table__cell" data-row="price">
                   <#if (product.priceText.getData()?has_content)>
-                     ${product.priceText.getData()}
+                    ${product.priceText.getData()}
                   <#else>
                     <p></p>
                   </#if>
@@ -295,11 +352,11 @@
                     data-row="${value?index}" 
                   >
                     <#if (value.Icono.getData() == "check")>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.106 15.1147L16.8695 8.37623C17.0016 8.24418 17.149 8.18072 17.3118 8.18583C17.4746 8.19097 17.6253 8.26277 17.7637 8.40123C17.9022 8.53968 17.9714 8.68872 17.9714 8.84833C17.9714 9.00793 17.9022 9.15697 17.7637 9.29543L10.6887 16.3704C10.5246 16.5345 10.3346 16.6166 10.1185 16.6166C9.90252 16.6166 9.71246 16.5345 9.54836 16.3704L6.69836 13.5204C6.56631 13.3884 6.49708 13.241 6.49066 13.0781C6.48426 12.9153 6.55028 12.7647 6.68873 12.6262C6.8272 12.4878 6.97623 12.4185 7.13583 12.4185C7.29545 12.4185 7.44448 12.4878 7.58293 12.6262L10.106 15.1147Z" fill="#0099CC"/>
                       </svg>
                     <#elseif (value.Icono.getData() == "cross")>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11.9998 12.9291L7.72673 17.2022C7.58828 17.3406 7.43925 17.4073 7.27963 17.4022C7.12003 17.3971 6.9678 17.3221 6.82293 17.1772C6.67805 17.0323 6.60561 16.8775 6.60561 16.7128C6.60561 16.548 6.67805 16.3932 6.82293 16.2484L11.071 12.0003L6.79793 7.72718C6.65946 7.58873 6.5928 7.43553 6.59793 7.26758C6.60305 7.09965 6.67805 6.94325 6.82293 6.79838C6.9678 6.6535 7.1226 6.58105 7.28733 6.58105C7.45206 6.58105 7.60686 6.6535 7.75173 6.79838L11.9998 11.0715L16.2729 6.79838C16.4114 6.65991 16.5646 6.58908 16.7325 6.58588C16.9005 6.58266 17.0569 6.6535 17.2017 6.79838C17.3466 6.94325 17.4191 7.09805 17.4191 7.26278C17.4191 7.42751 17.3466 7.58231 17.2017 7.72718L12.9287 12.0003L17.2017 16.2734C17.3402 16.4118 17.411 16.5609 17.4142 16.7205C17.4174 16.8801 17.3466 17.0323 17.2017 17.1772C17.0569 17.3221 16.9021 17.3945 16.7373 17.3945C16.5726 17.3945 16.4178 17.3221 16.2729 17.1772L11.9998 12.9291Z" fill="#A1A1A1"/>
                       </svg>
                     </#if>
@@ -323,11 +380,11 @@
                     class="price__cta ${product.ctaClass.getData()}" 
                     href="${product.URL.getData()}" 
                   >
-                   <#if (product.ctaText.getData()?has_content)>
+                  <#if (product.ctaText.getData()?has_content)>
                     ${product.ctaText.getData()}
-                   <#else>
-                     Cotizar
-                   </#if>
+                  <#else>
+                    Cotizar
+                  </#if>
                   </a>
                 </div>
               </div>
@@ -336,6 +393,7 @@
         </#if>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -454,20 +512,6 @@ function resizeAllRows(dataColumn = 'locked', isClean = false, node){
 
   const getWidthBodyColumns = ()=>getComputedStyle($OrThrow('[data-id="body-columns"]')).width
 
-  const resolveControlsContainerSize = ()=>{
-    let prevComputedStyle = getWidthBodyColumns()
-    const interval = setInterval(()=>{
-      const computedWidth = getWidthBodyColumns()
-
-      if(prevComputedStyle === computedWidth)
-        return clearInterval(interval)
-      prevComputedStyle = computedWidth;
-      controls.style.width = computedWidth;
-    }, 100)
-  }
-
-
-
   const changeControls = (node)=>{
     const buttons = $$('button[data-action]', node)
     const prevButtons = buttons.filter(element => element.getAttribute('data-action')==='prev');
@@ -517,14 +561,9 @@ function resizeAllRows(dataColumn = 'locked', isClean = false, node){
   })
 
 
-  resolveControlsContainerSize()
-  matchMedia("(min-width: 600px)")
-    .addEventListener('change', resolveControlsContainerSize);
-
   resizeByRow("price")
 
   bodySwiper.on('slideChange', ()=>{
-    console.log('progress')
     changeControls(document.body)
   })
 
