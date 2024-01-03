@@ -3,7 +3,22 @@
   href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
 />
 
+<link
+  rel="stylesheet"
+  href="https://www.unpkg.com/comparison-matrix@1.0.0/styles.css"
+/>
+
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://www.unpkg.com/comparison-matrix@1.0.0/index.umd.js"></script>
+<style>
+  .swiper{
+    margin: 0;
+  }
+
+  .table__cell{
+    min-height: 3rem;
+  }
+</style>
 
 <section 
   id="${seccionId.getData()}" 
@@ -44,6 +59,8 @@
       > 
         <#if productTitle.getSiblings()?has_content>
 	        <#list productTitle.getSiblings() as product>
+            <#assign isSolesActive=getterUtil.getBoolean(product.isSolesActive.getData()) />
+            <#assign isDollarsActive=getterUtil.getBoolean(product.isActiveDolars.getData()) />
             <div 
               class="swiper-slide"
               data-column="${product?index}"
@@ -71,10 +88,10 @@
                   <div 
                     class="table__products__header__currency-controls"
                   >
-                    <#if (getterUtil.getBoolean(product.isSolesActive.getData()))>
+                    <#if (isSolesActive)>
                       <button
                         id="${product.solesButtonId.getData()}" 
-                        class="flex ${product.solesButtonClass.getData()}" 
+                        class="flex ${product.solesButtonClass.getData()}}" 
                         data-column="${product?index}" 
                         data-currency="soles"
                       >
@@ -116,13 +133,12 @@
                         </p>
                       </button>
                     </#if>
-                    <#assign isSolesActive=getterUtil.getBoolean(product.isActiveDolars.getData()) />
-                    <#if (isSolesActive)>
+                    <#if (isDollarsActive)>
                       <button
                         id="${product.dolarsButtonId.getData()}"
-                        class="flex ${isSolesActive?string('color--primary', '') ${product.dolarsButtonClass.getData()}" 
-                        data-currency="dolars" 
-                        data-column-id="${product.dataId.getData()}"
+                        class="flex ${isSolesActive?string('color--primary', '')} ${product.dolarsButtonClass.getData()}" 
+                        data-currency="dollars" 
+                         data-column="${product?index}" 
                       >
                         <svg 
                           class="currency-icon currency-icon--vibrate"
@@ -144,7 +160,7 @@
                         <p 
                           class="currency hide-on-680" 
                           data-column="${product?index}"  
-                          data-currency="dolars"
+                          data-currency="dollars"
                         >
                           Dólares
                         </p>
@@ -154,16 +170,23 @@
                 </div> 
               </div>
       
-              <div data-id="${product.dataId.getData()}" data-currency-id="soles">
+              <div 
+                class="${isSolesActive?string('', 'hidden')}"  
+                data-currency-id="soles"
+              >
                 <#list product.Valor.getSiblings() as value>
-                  <div class="table__data-cell table-boder--theme no-border-inline no-border-top">
+                  <div 
+                    class="table__cell table__products__cell" 
+                    data-row="${value?index}"
+                  >
                     <#if (value.Icono.getData() == "check")>
-                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15.16 22.671L25.3052 12.5634C25.5033 12.3653 25.7245 12.2701 25.9687 12.2778C26.2129 12.2855 26.4389 12.3932 26.6465 12.6009C26.8542 12.8085 26.9581 13.0321 26.9581 13.2715C26.9581 13.5109 26.8542 13.7345 26.6465 13.9422L16.034 24.5546C15.7879 24.8008 15.5028 24.9239 15.1788 24.9239C14.8548 24.9239 14.5697 24.8008 14.3235 24.5546L10.0485 20.2797C9.85044 20.0816 9.74659 19.8604 9.73696 19.6162C9.72736 19.372 9.8264 19.146 10.0341 18.9384C10.2418 18.7307 10.4653 18.6268 10.7047 18.6268C10.9442 18.6268 11.1677 18.7307 11.3754 18.9384L15.16 22.671Z" fill="#0099CC"/>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.106 15.1147L16.8695 8.37623C17.0016 8.24418 17.149 8.18072 17.3118 8.18583C17.4746 8.19097 17.6253 8.26277 17.7637 8.40123C17.9022 8.53968 17.9714 8.68872 17.9714 8.84833C17.9714 9.00793 17.9022 9.15697 17.7637 9.29543L10.6887 16.3704C10.5246 16.5345 10.3346 16.6166 10.1185 16.6166C9.90252 16.6166 9.71246 16.5345 9.54836 16.3704L6.69836 13.5204C6.56631 13.3884 6.49708 13.241 6.49066 13.0781C6.48426 12.9153 6.55028 12.7647 6.68873 12.6262C6.8272 12.4878 6.97623 12.4185 7.13583 12.4185C7.29545 12.4185 7.44448 12.4878 7.58293 12.6262L10.106 15.1147Z" fill="#0099CC"/>
                       </svg>
-                    <#elseif (value.Icono.getData() == "cross")>
-                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.9997 19.3932L11.5901 25.8028C11.3824 26.0105 11.1589 26.1105 10.9194 26.1028C10.68 26.0951 10.4517 25.9826 10.2344 25.7653C10.0171 25.548 9.90841 25.3158 9.90841 25.0687C9.90841 24.8216 10.0171 24.5894 10.2344 24.3721L16.6065 17.9999L10.1969 11.5903C9.9892 11.3826 9.8892 11.1528 9.8969 10.9009C9.90457 10.649 10.0171 10.4144 10.2344 10.1971C10.4517 9.97976 10.6839 9.87109 10.931 9.87109C11.1781 9.87109 11.4103 9.97976 11.6276 10.1971L17.9997 16.6067L24.4094 10.1971C24.6171 9.98938 24.8469 9.88313 25.0988 9.87833C25.3507 9.87351 25.5853 9.97976 25.8026 10.1971C26.0199 10.4144 26.1286 10.6466 26.1286 10.8937C26.1286 11.1408 26.0199 11.373 25.8026 11.5903L19.393 17.9999L25.8026 24.4096C26.0103 24.6173 26.1165 24.8408 26.1213 25.0802C26.1262 25.3196 26.0199 25.548 25.8026 25.7653C25.5853 25.9826 25.3531 26.0913 25.106 26.0913C24.8589 26.0913 24.6267 25.9826 24.4094 25.7653L17.9997 19.3932Z" fill="#A1A1A1"/>
+                    </#if>
+                    <#if (value.Icono.getData() == "cross")>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.9998 12.9291L7.72673 17.2022C7.58828 17.3406 7.43925 17.4073 7.27963 17.4022C7.12003 17.3971 6.9678 17.3221 6.82293 17.1772C6.67805 17.0323 6.60561 16.8775 6.60561 16.7128C6.60561 16.548 6.67805 16.3932 6.82293 16.2484L11.071 12.0003L6.79793 7.72718C6.65946 7.58873 6.5928 7.43553 6.59793 7.26758C6.60305 7.09965 6.67805 6.94325 6.82293 6.79838C6.9678 6.6535 7.1226 6.58105 7.28733 6.58105C7.45206 6.58105 7.60686 6.6535 7.75173 6.79838L11.9998 11.0715L16.2729 6.79838C16.4114 6.65991 16.5646 6.58908 16.7325 6.58588C16.9005 6.58266 17.0569 6.6535 17.2017 6.79838C17.3466 6.94325 17.4191 7.09805 17.4191 7.26278C17.4191 7.42751 17.3466 7.58231 17.2017 7.72718L12.9287 12.0003L17.2017 16.2734C17.3402 16.4118 17.411 16.5609 17.4142 16.7205C17.4174 16.8801 17.3466 17.0323 17.2017 17.1772C17.0569 17.3221 16.9021 17.3945 16.7373 17.3945C16.5726 17.3945 16.4178 17.3221 16.2729 17.1772L11.9998 12.9291Z" fill="#A1A1A1"/>
                       </svg>
                     </#if>
                     <p>
@@ -175,35 +198,42 @@
                     </p>
                   </div>
                 </#list>
-                <div class="price">
+                <div class="price table__cell">
                   <#if (product.priceText.getData()?has_content)>
-                     ${product.priceText.getData()!""}
+                     ${product.priceText.getData()}
                   <#else>
                     <p></p>
                   </#if>
                   <a 
                     id="${product.ctaId.getData()}" 
-                    class="table__cta center ${product.ctaClass.getData()}" 
+                    class="price__cta ${product.ctaClass.getData()}" 
                     href="${product.URL.getData()}" 
                   >
-                   <#if (product.ctaText.getData()?has_content)>
-                    ${product.ctaText.getData()}
-                   <#else>
-                     Cotizar
-                   </#if>
+                    <#if (product.ctaText.getData()?has_content)>
+                      ${product.ctaText.getData()}
+                    <#else>
+                      Cotizar
+                    </#if>
                   </a>
                 </div>
               </div>
-              <div class="hide" data-id="${product.dataId.getData()}" data-currency-id="dolars">
+            
+              <div 
+                class="${isSolesActive?string('hidden', '')}"
+                data-currency-id="dollars"
+              >
                 <#list product.Valor.getSiblings() as value>
-                  <div class="table__data-cell table-boder--theme no-border-inline no-border-top">
+                  <div
+                    class="table__cell table__products__cell" 
+                    data-row="${value?index}" 
+                  >
                     <#if (value.Icono.getData() == "check")>
-                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15.16 22.671L25.3052 12.5634C25.5033 12.3653 25.7245 12.2701 25.9687 12.2778C26.2129 12.2855 26.4389 12.3932 26.6465 12.6009C26.8542 12.8085 26.9581 13.0321 26.9581 13.2715C26.9581 13.5109 26.8542 13.7345 26.6465 13.9422L16.034 24.5546C15.7879 24.8008 15.5028 24.9239 15.1788 24.9239C14.8548 24.9239 14.5697 24.8008 14.3235 24.5546L10.0485 20.2797C9.85044 20.0816 9.74659 19.8604 9.73696 19.6162C9.72736 19.372 9.8264 19.146 10.0341 18.9384C10.2418 18.7307 10.4653 18.6268 10.7047 18.6268C10.9442 18.6268 11.1677 18.7307 11.3754 18.9384L15.16 22.671Z" fill="#0099CC"/>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.106 15.1147L16.8695 8.37623C17.0016 8.24418 17.149 8.18072 17.3118 8.18583C17.4746 8.19097 17.6253 8.26277 17.7637 8.40123C17.9022 8.53968 17.9714 8.68872 17.9714 8.84833C17.9714 9.00793 17.9022 9.15697 17.7637 9.29543L10.6887 16.3704C10.5246 16.5345 10.3346 16.6166 10.1185 16.6166C9.90252 16.6166 9.71246 16.5345 9.54836 16.3704L6.69836 13.5204C6.56631 13.3884 6.49708 13.241 6.49066 13.0781C6.48426 12.9153 6.55028 12.7647 6.68873 12.6262C6.8272 12.4878 6.97623 12.4185 7.13583 12.4185C7.29545 12.4185 7.44448 12.4878 7.58293 12.6262L10.106 15.1147Z" fill="#0099CC"/>
                       </svg>
                     <#elseif (value.Icono.getData() == "cross")>
-                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.9997 19.3932L11.5901 25.8028C11.3824 26.0105 11.1589 26.1105 10.9194 26.1028C10.68 26.0951 10.4517 25.9826 10.2344 25.7653C10.0171 25.548 9.90841 25.3158 9.90841 25.0687C9.90841 24.8216 10.0171 24.5894 10.2344 24.3721L16.6065 17.9999L10.1969 11.5903C9.9892 11.3826 9.8892 11.1528 9.8969 10.9009C9.90457 10.649 10.0171 10.4144 10.2344 10.1971C10.4517 9.97976 10.6839 9.87109 10.931 9.87109C11.1781 9.87109 11.4103 9.97976 11.6276 10.1971L17.9997 16.6067L24.4094 10.1971C24.6171 9.98938 24.8469 9.88313 25.0988 9.87833C25.3507 9.87351 25.5853 9.97976 25.8026 10.1971C26.0199 10.4144 26.1286 10.6466 26.1286 10.8937C26.1286 11.1408 26.0199 11.373 25.8026 11.5903L19.393 17.9999L25.8026 24.4096C26.0103 24.6173 26.1165 24.8408 26.1213 25.0802C26.1262 25.3196 26.0199 25.548 25.8026 25.7653C25.5853 25.9826 25.3531 26.0913 25.106 26.0913C24.8589 26.0913 24.6267 25.9826 24.4094 25.7653L17.9997 19.3932Z" fill="#A1A1A1"/>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.9998 12.9291L7.72673 17.2022C7.58828 17.3406 7.43925 17.4073 7.27963 17.4022C7.12003 17.3971 6.9678 17.3221 6.82293 17.1772C6.67805 17.0323 6.60561 16.8775 6.60561 16.7128C6.60561 16.548 6.67805 16.3932 6.82293 16.2484L11.071 12.0003L6.79793 7.72718C6.65946 7.58873 6.5928 7.43553 6.59793 7.26758C6.60305 7.09965 6.67805 6.94325 6.82293 6.79838C6.9678 6.6535 7.1226 6.58105 7.28733 6.58105C7.45206 6.58105 7.60686 6.6535 7.75173 6.79838L11.9998 11.0715L16.2729 6.79838C16.4114 6.65991 16.5646 6.58908 16.7325 6.58588C16.9005 6.58266 17.0569 6.6535 17.2017 6.79838C17.3466 6.94325 17.4191 7.09805 17.4191 7.26278C17.4191 7.42751 17.3466 7.58231 17.2017 7.72718L12.9287 12.0003L17.2017 16.2734C17.3402 16.4118 17.411 16.5609 17.4142 16.7205C17.4174 16.8801 17.3466 17.0323 17.2017 17.1772C17.0569 17.3221 16.9021 17.3945 16.7373 17.3945C16.5726 17.3945 16.4178 17.3221 16.2729 17.1772L11.9998 12.9291Z" fill="#A1A1A1"/>
                       </svg>
                     </#if>
                     <p>
@@ -215,7 +245,7 @@
                     </p>
                   </div>
                 </#list>
-                <div class="price">
+                <div class="price table__cell">
                   <#if (product.priceTextDolars.getData()?has_content)>
                     ${product.priceTextDolars.getData()!""}
                   <#else>
@@ -223,7 +253,7 @@
                   </#if>
                   <a 
                     id="${product.ctaId.getData()}" 
-                    class="table__cta center ${product.ctaClass.getData()}" 
+                    class="price__cta ${product.ctaClass.getData()}" 
                     href="${product.URL.getData()}" 
                   >
                    <#if (product.ctaText.getData()?has_content)>
@@ -243,184 +273,99 @@
 </section>
 
 <script>
-  const q$ = selector => document.body.querySelector(selector);
-  const q$$ = selector => [...document.body.querySelectorAll(selector)]
+  <#noparse>
+  (()=>{
+     const { $, $$, cloneHeader, handleClickCurrency, lenseIntersectionObserver, $OrThrow, IntersectionStatus } = comparisonMatrix;
+     function getComputedHeight(element){
+      return Number(getComputedStyle(element).height.replace('px', ''))
+     }
 
-  function lenseViewStatus(element, cb, options) {
-    let positionStatus = "exit";
+function resizeByRow(dataRow, isClean = false,  node){
+  const rowElements = $$(`section [data-row="${dataRow}"]`, node)
+ 
+  //TODO: Evaluate if should be piping map beacuse reduce is not pure
+  const maxHeight = rowElements
+    .reduce((maxHeight, element) => {
+      const newHeight = getComputedHeight(element)
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && positionStatus === "exit") {
-          positionStatus = "entered";
-        } else if (!entry.isIntersecting && positionStatus === "entered")
-          positionStatus = "exit";
+      return newHeight > maxHeight? newHeight: maxHeight
+    }, 0)
 
-        if (cb) cb(positionStatus);
-      });
-    }, options);
-
-    observer.observe(element);
-    observer.observe = () => {
-      throw new Error("observer already used");
-    };
-
-    return [observer, () => positionStatus];
-  }
-  
-  const fakeHeaderRow = q$(
-    '[data-id="fake-header-row"]'
-  );
-  
-  lenseViewStatus.off = ()=> []
-  
-  const table = q$('[data-id="table"]');
-  
-  const tableHeader = q$('[data-id="table-header"]');
-  
-  const [tableHeaderObserver, getTableHeaderStatus] = lenseViewStatus.off(
-    tableHeader,
-    (status) => {
-      if (status === "exit")
-        return fakeHeaderRow.classList.replace(
-          "fake-header-row--hide",
-          "fake-header-row--show"
-        );
-  
-      fakeHeaderRow.classList.replace(
-        "fake-header-row--show",
-        "fake-header-row--hide"
-      );
-    }
-  );
-  
-  const [tableObserver, getTableStatus] = lenseViewStatus.off(table, (status) => {
-    if (status === "exit")
-      fakeHeaderRow.classList.replace(
-        "fake-header-row--show",
-        "fake-header-row--hide"
-      );
-    else if (getTableHeaderStatus() === "exit")
-      fakeHeaderRow.classList.replace(
-        "fake-header-row--hide",
-        "fake-header-row--show"
-      );
+  rowElements.forEach(element => {
+    const height = getComputedHeight(element);
+    const isHeader = element.getAttribute('data-row') === 'header';
+   
+    if(!isClean || Number.isNaN(height) ||  height < maxHeight)
+      element.style.height = `${maxHeight + (isHeader? 0 : 32)}px`
   });
+}
 
-  const getSlidesPerView = ()=>{
-    if(window.innerWidth>=880)
-      return 3;
-    if(window.innerWidth >= 680)
-      return 2;
 
-    return 'auto';
+function resizeAllRows(dataColumn = 'locked', isClean = false, node){
+  const dataRows = $$(`section [data-column="${dataColumn}"] [data-row]`, node)
+    .map(element => element.getAttribute('data-row'))
+
+
+  dataRows.forEach(dataRow => resizeByRow(dataRow ?? '', isClean, node));
+}
+  const getSlidesPerView = () => {
+      const width = Number(getComputedStyle(document.body).width.replace('px', ''));
+      if (width >= 880)
+          return 3;
+      if (width >= 680)
+          return 2;
+      return "auto";
+  };
+  const slidesDefaultConfig = () => ({
+      slidesPerView: getSlidesPerView(),
+      centeredSlides: false,
+      spaceBetween: 0,
+      grabCursor: true,
+  });
+  const createBodySwiper = () => new Swiper('[data-id="body-columns"]', Object.assign({}, slidesDefaultConfig()));
+  let bodySwiper = createBodySwiper();
+  cloneHeader("test");
+  const createHeaderSwiper = () => new Swiper('[data-id="swiper-fixed-header"]', Object.assign({}, slidesDefaultConfig()));
+  // TODO: should encapsulate this , maybe a lense
+  let staticHeaderSwiper = createHeaderSwiper();
+
+  bodySwiper.controller.control = staticHeaderSwiper
+  staticHeaderSwiper.controller.control = bodySwiper
+  function recreateTable() {
+      bodySwiper.destroy();
+      staticHeaderSwiper.destroy();
+      staticHeaderSwiper = createHeaderSwiper();
+      bodySwiper = createBodySwiper();
+      // cleanAllResizedRows();
+      resizeAllRows();
+
+      bodySwiper.controller.control = staticHeaderSwiper
+      staticHeaderSwiper.controller.control = bodySwiper
   }
-
-  const slidesDefaultConfig = {
-    slidesPerView: getSlidesPerView(),
-    centeredSlides: false,
-    spaceBetween: 0,
-    grabCursor: true
-
-  }
-  
-
-  const bodySwiper = new Swiper('[data-id="body-columns"]', slidesDefaultConfig);
-  
-  const fakeHeaderSwiper = new Swiper('[data-id="fake-body-columns"]', slidesDefaultConfig);
-  
-  function createReactToSlide(time = 150) {
-    let aleadyRun = false;
-
-    return function (b) {
-      return function () {
-        if (aleadyRun) {
-          aleadyRun = false;
+  matchMedia("(min-width: 600px)").addEventListener('change', recreateTable);
+  resizeAllRows();
+  //const swiperTableBody = $OrThrow('[data-id="swiper-table-body"]');
+  document.body.addEventListener("click", handleClickCurrency);
+  const rowHeader = $OrThrow('[data-row="header"]');
+  const fixedHeader = document.querySelector('[data-id="fixed-header"]');
+  const fixedColumn = $OrThrow('[data-column="locked"]');
+  const [getStatusFixedColumn] = lenseIntersectionObserver.off(fixedColumn, (status) => {
+      if (status === IntersectionStatus.notEntered)
           return;
-        }
-        aleadyRun = true;
-        b.slideTo(this.activeIndex, time, false);
-      };
-    };
-  }
-
-  const reactToSlide = createReactToSlide();
-
-  bodySwiper.on("slideChange", reactToSlide(fakeHeaderSwiper));
-  fakeHeaderSwiper.on("slideChange", reactToSlide(bodySwiper));
-  
-  const swiperTableBody = q$('[data-id="swiper-table-body"]');
-
-  function handleChangeCurency({target}) {
-    const dataCurrency = target.getAttribute("data-currency");
-
-    if (!dataCurrency) return;
-
-    const columnId = target.getAttribute("data-column-id");
-
-    <#noparse>
-      const buttons = q$$(`button[data-column-id="${columnId}"]`)
-
-      const columns = q$$(`[data-id=\"${columnId}\"]`);
-    </#noparse>
-  
-    const columnToShow = columns.find(
-      (e) => e.getAttribute("data-currency-id") === dataCurrency
-    );
-    const columnToHide = columns.find(
-      (e) => e.getAttribute("data-currency-id") !== dataCurrency
-    );
-
-    const buttonToNoHigligth = buttons.filter(
-      e => e.getAttribute('data-currency') === dataCurrency
-    )
-
-    const buttonToHigligth = buttons.filter(
-      e => e.getAttribute('data-currency') !== dataCurrency
-    )
-
-    buttonToNoHigligth
-      .forEach(button => button.classList.remove("color--primary"));
-
-    buttonToHigligth
-      .forEach(button => button.classList.add("color--primary"));
-  
-    columnToShow.classList.remove("hide");
-    columnToHide.classList.add("hide");
-  }
-
-  fakeHeaderRow.addEventListener("click", handleChangeCurency);
-  swiperTableBody.addEventListener("click", handleChangeCurency);
-
-  const controls = q$('[data-id="controls"]')
-
-  controls.addEventListener('click', function({target}){
-    const action = target.getAttribute('data-action');
-
-    if(!action)
-      return;
-    
-    switch(action){
-      case 'next': 
-        bodySwiper.slideNext();
-        break;
-      case 'prev':
-        bodySwiper.slidePrev();
-        break;
-    }
-
-    if(bodySwiper.progress){
-      this.querySelector('button[data-action="prev"]').classList.add('color--primary');
-    }else{
-      this.querySelector('button[data-action="prev"]').classList.remove('color--primary')
-    }
-
-    if(bodySwiper.progress === 1){
-      this.querySelector('button[data-action="next"]').classList.remove('color--primary');
-    }else{
-      this.querySelector('button[data-action="next"]').classList.add('color--primary')
-    }     
-
-  })
-  
+      if (status !== IntersectionStatus.entered)
+          return fixedHeader === null || fixedHeader === void 0 ? void 0 : fixedHeader.classList.add('static-header--hidden');
+      if (getStatus().status !== IntersectionStatus.entered)
+          fixedHeader === null || fixedHeader === void 0 ? void 0 : fixedHeader.classList.remove('static-header--hidden');
+  });
+  const [getStatus] = lenseIntersectionObserver.off(rowHeader, (status) => {
+      if (status === IntersectionStatus.notEntered)
+          return;
+      if (status !== IntersectionStatus.entered && getStatusFixedColumn().status === IntersectionStatus.entered) {
+          return fixedHeader === null || fixedHeader === void 0 ? void 0 : fixedHeader.classList.remove('static-header--hidden');
+      }
+      fixedHeader === null || fixedHeader === void 0 ? void 0 : fixedHeader.classList.add('static-header--hidden');
+  });
+  </#noparse>
+  })()
+ 
 </script>
