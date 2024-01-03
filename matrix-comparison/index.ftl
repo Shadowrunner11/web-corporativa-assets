@@ -11,12 +11,34 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://www.unpkg.com/comparison-matrix@1.0.0/index.umd.js"></script>
 <style>
-  .swiper{
+ .swiper{
     margin: 0;
   }
 
   .table__cell{
     min-height: 3rem;
+  }
+
+  .controls{
+    margin-inline-start: auto;
+    padding-inline: 0.25rem;
+    display: none;
+  }
+
+  @media only screen and (min-width: 520px){
+    .controls{
+      display: flex;
+    }
+  }
+
+  .price{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .price__cta{
+    height: max-content;
   }
 </style>
 
@@ -27,6 +49,51 @@
   <h2 class="title--primary">
     ${title.getData()}
   </h2>
+  <div 
+    class="flex justify--between controls"
+    data-id="controls"
+  >
+    <button class="flex" data-action="prev" style="gap: 0.5rem;">
+      <svg
+        data-action="prev" 
+        width="20" 
+        height="20" 
+        viewBox="0 0 20 20" 
+        fill="currentColor" 
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          data-action="prev"  
+          d="M8.29954 9.99691L13.7112 15.3343C13.8952 15.5157 13.9893 15.7438 13.9936 16.0185C13.9979 16.2931 13.9037 16.5254 13.7112 16.7152C13.5188 16.9051 13.2854 17 13.0112 17C12.7369 17 12.5036 16.9051 12.3111 16.7152L6.33984 10.826C6.21547 10.7033 6.12775 10.574 6.07666 10.4379C6.02555 10.3018 6 10.1548 6 9.99691C6 9.83898 6.02555 9.69199 6.07666 9.55592C6.12775 9.41984 6.21547 9.29048 6.33984 9.16785L12.3111 3.2786C12.4951 3.09715 12.7263 3.00433 13.0048 3.00014C13.2833 2.99592 13.5188 3.08874 13.7112 3.2786C13.9037 3.46843 14 3.69858 14 3.96905C14 4.23952 13.9037 4.46967 13.7112 4.6595L8.29954 9.99691Z" 
+          fill="currentColor"
+        />
+      </svg>
+
+      Anterior
+    </button>
+    <button
+      class="flex" 
+      data-action="next"
+      style="gap: 0.5rem;"
+    >
+      Siguiente
+      <svg
+        data-action="next" 
+        width="20" 
+        height="21" 
+        viewBox="0 0 20 21" 
+        fill="currentColor" 
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          data-action="next" 
+          d="M11.7005 10.5031L6.28875 5.16569C6.10478 4.98426 6.01066 4.75621 6.00641 4.48153C6.00214 4.20686 6.09625 3.97462 6.28875 3.78478C6.48123 3.59493 6.71458 3.5 6.98882 3.5C7.26305 3.5 7.49641 3.59493 7.68889 3.78478L13.6602 9.67403C13.7845 9.79666 13.8723 9.92602 13.9233 10.0621C13.9744 10.1982 14 10.3452 14 10.5031C14 10.661 13.9744 10.808 13.9233 10.9441C13.8723 11.0802 13.7845 11.2095 13.6602 11.3322L7.68889 17.2214C7.50493 17.4029 7.2737 17.4957 6.9952 17.4999C6.71671 17.5041 6.48123 17.4113 6.28875 17.2214C6.09625 17.0316 6 16.8014 6 16.531C6 16.2605 6.09625 16.0303 6.28875 15.8405L11.7005 10.5031Z" 
+          fill="currentColor"
+        />
+      </svg>
+    </button>
+  </div>
+
 
   <div class="table flex">
     <div class="table__locked-column" data-column="locked">
@@ -198,7 +265,7 @@
                     </p>
                   </div>
                 </#list>
-                <div class="price table__cell">
+                <div class="price table__cell" data-row="price">
                   <#if (product.priceText.getData()?has_content)>
                      ${product.priceText.getData()}
                   <#else>
@@ -245,7 +312,7 @@
                     </p>
                   </div>
                 </#list>
-                <div class="price table__cell">
+                <div class="price table__cell" data-row="price">
                   <#if (product.priceTextDolars.getData()?has_content)>
                     ${product.priceTextDolars.getData()!""}
                   <#else>
@@ -284,20 +351,37 @@ function resizeByRow(dataRow, isClean = false,  node){
   const rowElements = $$(`section [data-row="${dataRow}"]`, node)
  
   //TODO: Evaluate if should be piping map beacuse reduce is not pure
-  const maxHeight = rowElements
+  let prevMaxHeight = rowElements
     .reduce((maxHeight, element) => {
       const newHeight = getComputedHeight(element)
 
       return newHeight > maxHeight? newHeight: maxHeight
     }, 0)
 
-  rowElements.forEach(element => {
-    const height = getComputedHeight(element);
-    const isHeader = element.getAttribute('data-row') === 'header';
-   
-    if(!isClean || Number.isNaN(height) ||  height < maxHeight)
-      element.style.height = `${maxHeight + (isHeader? 0 : 32)}px`
-  });
+  const interval = setInterval(()=>{
+    const maxHeight = rowElements
+    .reduce((maxHeight, element) => {
+      const newHeight = getComputedHeight(element)
+
+      return newHeight > maxHeight? newHeight: maxHeight
+    }, 0)
+  
+    if(prevMaxHeight === maxHeight){
+      rowElements.forEach(element => {
+        const height = getComputedHeight(element);
+        const isHeader = element.getAttribute('data-row') === 'header';
+      
+        if(!isClean || Number.isNaN(height) ||  height < maxHeight)
+          element.style.height = `${maxHeight + (isHeader? 0 : 32)}px`
+      });
+
+      return clearInterval(interval)
+    }
+
+    prevMaxHeight = maxHeight
+  }, 100)
+
+  
 }
 
 
@@ -365,6 +449,85 @@ function resizeAllRows(dataColumn = 'locked', isClean = false, node){
       }
       fixedHeader === null || fixedHeader === void 0 ? void 0 : fixedHeader.classList.add('static-header--hidden');
   });
+
+  const controls = $OrThrow('.controls')
+
+  const getWidthBodyColumns = ()=>getComputedStyle($OrThrow('[data-id="body-columns"]')).width
+
+  const resolveControlsContainerSize = ()=>{
+    let prevComputedStyle = getWidthBodyColumns()
+    const interval = setInterval(()=>{
+      const computedWidth = getWidthBodyColumns()
+
+      if(prevComputedStyle === computedWidth)
+        return clearInterval(interval)
+      prevComputedStyle = computedWidth;
+      controls.style.width = computedWidth;
+    }, 100)
+  }
+
+
+
+  const changeControls = (node)=>{
+    const buttons = $$('button[data-action]', node)
+    const prevButtons = buttons.filter(element => element.getAttribute('data-action')==='prev');
+    const nextButtons = buttons.filter(element => element.getAttribute('data-action')==='next')
+
+    if(bodySwiper.slides.length <= getSlidesPerView())
+      return
+    if(bodySwiper.isEnd){
+      nextButtons.forEach(button =>button.classList.remove('color--primary'))
+    }else{
+      nextButtons.forEach(button =>button.classList.add('color--primary'))
+    }
+
+    if(bodySwiper.isBeginning){
+      prevButtons.forEach(button =>button.classList.remove('color--primary'))
+    }else{
+      prevButtons.forEach(button =>button.classList.add('color--primary'))
+    }
+  }
+
+  changeControls(document.body);
+
+  controls.addEventListener('click', function({target}){
+    if(!(target instanceof HTMLElement))
+      return 
+
+    const action = target.getAttribute('data-action');
+
+    if(!action)
+      return
+
+    switch(action){
+      case "next":{
+        bodySwiper.slideNext()
+        break;
+      }
+      case "prev":{
+        bodySwiper.slidePrev();
+        break;
+      }
+      default:
+        throw new Error('not supported action')
+    }
+
+    changeControls(this)
+
+  })
+
+
+  resolveControlsContainerSize()
+  matchMedia("(min-width: 600px)")
+    .addEventListener('change', resolveControlsContainerSize);
+
+  resizeByRow("price")
+
+  bodySwiper.on('slideChange', ()=>{
+    console.log('progress')
+    changeControls(document.body)
+  })
+
   </#noparse>
   })()
  
